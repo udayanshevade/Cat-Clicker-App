@@ -1,86 +1,87 @@
-(function() {
+document.addEventListener('DOMContentLoaded', function() {
 
-  var numCats = 5;
+    var doc = document;
 
-  var select = document.getElementById('select');
+    var model = {
+        init: function(n) {
+            this.cats = [];
 
-  // create overall Cat images container
-  var catsContainer = document.getElementById('catsContainer');
+            var j, imagesNum = 2;
+            for (var i = 0; i < n; i++) {
+                j = i % imagesNum;
+                this.cats.push({
+                    id: i,
+                    name: 'Cat ' + i,
+                    count: 0,
+                    src: 'img/cat' + j + '.jpg',
+                    visible: false
+                });
+            }
 
-  var cat, catName, catCounter, catContainer, selectOption, currentContainer;
+            this.cats[0].visible = true;
+        },
+        upCount: function(cat) {
+            this.cats[cat].count++;
+        }
+    };
 
-  for (var i = 0; i < numCats; i++) {
-    // work with only 2 images
-    var j = i % 3;
-    // create each cat container
-    catContainer = document.createElement('div');
-    // create cat image node
-    cat = document.createElement('img');
-    // create click counter node
-    catCounter = document.createElement('h1');
-    // create select option
-    selectOption = document.createElement('li');
+    var octopus = {
+        init: function() {
+            model.init(5);
+            view.init();
+        },
+        getVisibleCat: function() {
+            var visibleCat = model.cats.filter(function(cat) {
+                return cat.visible;
+            });
+            return visibleCat[0];
+        },
+        upCount: function(cat) {
+            model.upCount(cat.id);
+            view.render(cat);
+        }
+    }
 
-    // style cat container half row width
-    catContainer.id = 'catContainer' + i;
-    catContainer.style.width = '50%';
-    catContainer.style.display = 'inline-block';
+    var view = {
+        init: function() {
+            // create cat display elements
+            this.catContainer = doc.createElement('div');
+            this.counter = doc.createElement('h1');
+            this.name = doc.createElement('h3');
+            this.img = doc.createElement('img');
+            this.selectList = doc.createElement('ul');
 
-    catNameText = 'Cat ' + i;
-    catName = document.createElement('h3');
-    catName.innerText = catNameText;
-
-    selectOption.innerText = catNameText;
-
-    // add id to cat
-    cat.id = 'cat' + i;
-    // style cat image to 100 max
-    cat.className = 'img-responsive';
-    // define src to image
-    cat.src = 'img/cat' + j + '.jpg';
-
-    // style counter
-    catCounter.id = 'counter' + i;
-    catCounter.innerText = 0;
-
-    // append cat container to overall container
-    catsContainer.appendChild(catContainer);
-
-    select.appendChild(selectOption);
-
-    // add counter
-    catContainer.appendChild(catCounter);
-    catContainer.appendChild(catName);
-    // add cat image
-    catContainer.appendChild(cat);
-
-    // get current counter
-    thisCatCounter = document.getElementById('counter' + i);
-
-    catContainer.style.display = 'none';
-
-    // bind cat click counter to current ID
-    cat.addEventListener('click', (function(i, counter) {
-      return function() {
-        counter.innerText = parseInt(counter.innerText) + 1;
-      };
-    })(i, thisCatCounter));
-
-    // bind list options to showing related cats
-    selectOption.addEventListener('click', (function(i, next) {
-      return function() {
-        currentContainer.style.display = 'none';
-        next.style.display = 'inline-block';
-        currentContainer = next;
-      };
-    })(i, catContainer));
-
-  }
-
-  // define initial currentContainer which will get replaced
-  currentContainer = document.getElementById('catContainer0');
-  currentContainer.style.display = 'inline-block';
+            this.catContainer.id = 'catContainer';
+            this.counter.id = 'catCounter';
+            this.name.id = 'catName';
+            this.img.id = 'catImage';
+            this.selectList.id = 'select';
 
 
 
-})();
+            // append elements
+            document.body.appendChild(this.catContainer);
+            this.catContainer.appendChild(this.counter);
+            this.catContainer.appendChild(this.name);
+            this.catContainer.appendChild(this.img);
+            this.catContainer.appendChild(this.selectList);
+
+            // render visible cat
+            this.render();
+
+            this.img.addEventListener('click', function() {
+                octopus.upCount(view.visibleCat);
+            });
+        },
+        render: function(cat) {
+            this.visibleCat = octopus.getVisibleCat();
+
+            this.img.src = this.visibleCat.src;
+            this.name.innerText = this.visibleCat.name;
+            this.counter.innerText = this.visibleCat.count;
+        }
+    }
+
+    octopus.init();
+
+});
