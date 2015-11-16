@@ -1,13 +1,13 @@
 (function() {
 
-  var count1 = count2 = 0;
-  var numCats = 2;
+  var numCats = 5;
 
   // create overall Cat images container
   var catsContainer = document.getElementById('catsContainer');
 
   var cat, catName, catCounter, catContainer;
-  for (var i = 1; i < numCats + 1; i++) {
+  for (var i = 0; i < numCats; i++) {
+    var j = i % 2;
     // create each cat container
     catContainer = document.createElement('div');
     // create cat image node
@@ -25,10 +25,10 @@
 
     // add id to cat
     cat.id = 'cat' + i;
-    // define src to image
-    cat.src = 'img/cat' + i + '.jpg';
     // style cat image to 100 max
-    cat.style['max-width'] = '100%';
+    cat.className = 'img-responsive';
+    // define src to image
+    cat.src = 'img/cat' + j + '.jpg';
 
     // style counter
     catCounter.id = 'counter' + i;
@@ -43,23 +43,15 @@
     // add cat image
     catContainer.appendChild(cat);
 
+    // get current counter
     thisCatCounter = document.getElementById('counter' + i);
+
+    // bind cat click counter to current ID
+    cat.addEventListener('click', (function(i, counter) {
+      return function() {
+        counter.innerText = parseInt(counter.innerText) + 1;
+      };
+    })(i, thisCatCounter));;
   }
-
-    // bind click counter to image
-    var cat1 = document.getElementById('cat1');
-    var counter1 = document.getElementById('counter1')
-    cat1.addEventListener('click', function() {
-      count1++;
-      counter1.innerText = count1;
-    });
-
-    // bind click counter to image
-    var cat2 = document.getElementById('cat2');
-    var counter2 = document.getElementById('counter2')
-    cat2.addEventListener('click', function() {
-      count2++;
-      counter2.innerText = count2;
-    });
 
 })();
