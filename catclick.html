@@ -3,14 +3,36 @@
 <head>
   <title>Cat Clicker</title>
   <style>
+    body {
+      display: flex;
+    }
     .cat {
       max-width: 100%;
     }
     .catCounter {
       text-align: center;
     }
+    .img-responsive {
+      max-width: 100%;
+    }
     #catsContainer {
-      width: 100%;
+      display: inline-block;
+      width: 85%;
+    }
+    #select {
+      margin-top: 2em;
+      vertical-align: center;
+      display: inline-block;
+      list-style: none;
+      width: 15%;
+    }
+    li {
+      text-align: center;
+      padding: 1em 0;
+    }
+    li:hover {
+      cursor: pointer;
+      text-decoration: underline;
     }
     h1, h3 {
       text-align: center;
@@ -18,8 +40,8 @@
   </style>
 </head>
 <body>
-  <div id="catsContainer">
-  </div>
+  <div id="catsContainer"></div>
+  <ul id="select"></ul>
   <script src="js/catclicker.js"></script>
 </body>
 </html>
