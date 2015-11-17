@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var model = {
         init: function(n) {
             this.cats = [];
+            this.adminState = true;
 
             var j, imagesNum = 2;
             for (var i = 0; i < n; i++) {
@@ -21,8 +22,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
             this.cats[0].visible = true;
         },
-        upCount: function(cat) {
-            this.cats[cat].count++;
+        upCount: function(i) {
+            this.cats[i].count++;
+        },
+        toggleAdminState: function() {
+            this.adminState = !this.adminState;
+        },
+        updateCat: function(data, cat) {
+            var i = cat.id;
+            if (data.name) {
+                this.cats[i].name = data.name;
+                doc.getElementsByTagName('li')[i].innerText = data.name;
+            }
+            if (data.count) { this.cats[i].count = data.count; }
+            if (data.src) { this.cats[i].src = data.src; }
         }
     };
 
@@ -53,40 +66,51 @@ document.addEventListener('DOMContentLoaded', function() {
         upCount: function(cat) {
             model.upCount(cat.id);
             view.render();
+        },
+        getAdminState: function() {
+            model.toggleAdminState();
+            return model.adminState;
+        },
+        updateCat: function(data) {
+            model.updateCat(data, view.visibleCat);
+            view.render();
         }
     };
 
 
     var view = {
         init: function() {
-            // create cat display elements
-            this.catContainer = doc.createElement('div');
-            this.counter = doc.createElement('h1');
-            this.name = doc.createElement('h3');
-            this.img = doc.createElement('img');
-            this.selectList = doc.createElement('ul');
 
-            this.catContainer.id = 'catContainer';
-            this.counter.id = 'catCounter';
-            this.name.id = 'catName';
-            this.img.id = 'catImage';
-            this.selectList.id = 'ul';
-
-
-            // append elements
-            this.catContainer.appendChild(this.selectList);
-            document.body.appendChild(this.catContainer);
-            this.catContainer.appendChild(this.counter);
-            this.catContainer.appendChild(this.name);
-            this.catContainer.appendChild(this.img);
+            this.initReferences();
 
             // render visible cat
             this.render();
+
+            this.adminState = true;
+            this.toggleForm();
 
             // bind image clicks to appropriate image
             this.img.addEventListener('click', function() {
                 octopus.upCount(view.visibleCat);
             });
+
+            this.adminToggle.addEventListener('click', (function (_this) {
+                return function() {
+                    _this.toggleForm();
+                }
+            })(this));
+
+            this.saveButton.addEventListener('click', (function (_this) {
+                return function() {
+                    _this.saveForm();
+                }
+            })(this));
+
+            this.cancelButton.addEventListener('click', (function (_this) {
+                return function() {
+                    _this.toggleForm();
+                }
+            })(this));
 
             // return all current cats from model
             var allCats = octopus.getAllCats();
@@ -110,11 +134,48 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
         },
+        initReferences: function() {
+            // create references
+            this.catContainer = doc.getElementById('catContainer');
+            this.counter = doc.getElementById('catCounter');
+            this.name = doc.getElementById('catName');
+            this.img = doc.getElementById('catImage');
+            this.selectList = doc.getElementById('catSelect');
+            this.adminToggle = doc.getElementById('adminButton');
+            this.adminForm = doc.getElementById('formElements');
+            this.nameInput = doc.getElementById('nameInput');
+            this.imgInput = doc.getElementById('imgInput');
+            this.countInput = doc.getElementById('countInput');
+            this.saveButton = doc.getElementById('saveButton');
+            this.cancelButton = doc.getElementById('cancelButton');
+        },
         render: function() {
             this.visibleCat = octopus.getVisibleCat();
             this.img.src = this.visibleCat.src;
             this.name.innerText = this.visibleCat.name;
             this.counter.innerText = this.visibleCat.count;
+        },
+        toggleForm: function() {
+            this.adminState = octopus.getAdminState();
+            this.nameInput.value = '';
+            this.imgInput.value = '';
+            this.countInput.value = '';
+            this.adminState ? this.showForm() : this.hideForm();
+        },
+        showForm: function() {
+            this.adminForm.style.display = 'block';
+        },
+        hideForm: function() {
+            this.adminForm.style.display = 'none';
+        },
+        saveForm: function() {
+            var data = {
+                name: this.nameInput.value,
+                count: this.countInput.value,
+                img: this.imgInput.value
+            };
+            octopus.updateCat(data);
+            this.toggleForm();
         }
     };
 
