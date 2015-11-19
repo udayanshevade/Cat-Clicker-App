@@ -1,4 +1,4 @@
-var ViewModel = function() {
+var Cat = function() {
   this.clickCount = ko.observable(0);
   this.name = ko.observable('Tabby');
   this.imgSrc = ko.observable('img/Tabby.jpg');
@@ -10,12 +10,7 @@ var ViewModel = function() {
     return this.clickRanks().length;
   }, this);
 
-  // increment the counter as per the clicks
-  this.incrementCounter = function() {
-    this.clickCount(this.clickCount() + 1);
-  };
-
-  // computed value of clickLevel based on clickCount and clicksToNextRank
+    // computed value of clickLevel based on clickCount and clicksToNextRank
   this.clickLevel = ko.computed(function() {
     return Math.floor(this.clickCount()/this.clicksToNextRank());
   }, this);
@@ -27,6 +22,18 @@ var ViewModel = function() {
     }
     return this.clickRanks()[this.clickLevel()];
   }, this);
+
+}
+
+
+var ViewModel = function() {
+  this.currentCat = ko.observable( new Cat() );
+  // increment the counter as per the clicks
+  this.incrementCounter = function() {
+    this.currentCat().clickCount(this.currentCat().clickCount() + 1);
+  };
+
+
 };
 
 ko.applyBindings(new ViewModel());
