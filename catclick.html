@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+  <title>Cat Clicker</title>
+  <style>
+    #catContainer {
+      display: inline-block;
+    }
+    ul {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      margin: 2em auto;
+      padding-left: 0;
+      list-style: none;
+    }
+    @media screen and (min-width: 750px) {
+      ul {
+        flex-flow: row wrap;
+      }
+    }
+    li {
+      display: inline;
+      text-align: center;
+      padding: 0 1em;
+    }
+    li:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    #catName, #catCounter {
+      text-align: center;
+    }
+    .button {
+      display: inline-block;
+      padding: 0.5em;
+      background-color: #eee;
+    }
+    .button:hover {
+      background-color: #ccc;
+      cursor:pointer;
+    }
+  </style>
+  <script src="js/catclicker.js"></script>
+</head>
+<body>
+  <ul id="catSelect"></ul>
+  <div id="catContainer">
+    <h2 id="catName"></h2>
+    <h3 id="catCounter"></h3>
+    <img id="catImage"></img>
+  </div>
+  <div id="adminForm">
+    <div id="adminButton" class="button">Admin</div>
+    <div id="formElements">
+      <input type="text" id="nameInput">
+      <input type="text" id="countInput">
+      <input type="text" id="imgInput">
+      <div class="buttons">
+        <div id="cancelButton" class="button">Cancel</div>
+        <div id="saveButton" class="button">Save</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
